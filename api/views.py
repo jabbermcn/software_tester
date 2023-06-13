@@ -2,6 +2,9 @@ import logging
 from typing import Type, Optional
 
 from django.apps import apps
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from django.contrib.auth import get_user_model
 
 # Lamb Framework
 from lamb.exc import AuthForbidden, NotExistError, InvalidParamValueError
@@ -112,10 +115,15 @@ class AuthRegisterView(RestView):
 
 @rest_allowed_http_methods(["GET"])
 class UserView(RestView):
-    def get(self, request: AppRequest, user_id: str):
+    def get(self, request: AppRequest, user_id: str = None):
         """
         User details
         """
+        if user_id is None:
+            # Обработка случая, когда user_id не указан
+            # Например, вернуть список всех пользователей или другую логику по вашему выбору
+            return []
+
         user = get_user_by_identifier(request, user_id)  # type: Type[AbstractUser]
         if not request.app_user.can_read_user(user):
             raise AuthForbidden(f"You have not access to user with user_id: {user_id}")

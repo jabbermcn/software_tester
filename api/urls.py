@@ -15,7 +15,7 @@ urlpatterns = [
     # auth
     re_path(r"^auth/auth/?$", AuthRegisterView, name="auth"),
     # users
-    re_path(r"^users/(?P<user_id>[\w-]+)/?$", UserView, name="user"),
+    re_path(r"^users/(?P<user_id>[\w-]+)?/?$", UserView, name="user"),
     # services
     re_path(r"^services/store-rates/?$", StoreExchangeRatesView, name="store_exchanges_rates"),
 ]
