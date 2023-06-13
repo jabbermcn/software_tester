@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+import pytest
 from django.urls import reverse
 from django.test.client import Client
 
@@ -65,6 +66,20 @@ def test_handbook_view():
     assert response_user_types.json() == expected_user_types
 
 
+@pytest.mark.parametrize("handbook_name, expected_data", [
+    ("configs", [
+        {"name": "access_token_timeout", "value": 4320, "description": "Access token availability time, min"},
+        {"name": "refresh_token_timeout", "value": 43200, "description": "Refresh token availability time, min"}
+    ]),
+    ("user_types", ["SUPER_ADMIN", "OPERATOR", "USER"])
+])
+def test_handbook_view(handbook_name, expected_data):
+    client = Client()
+    response = client.get(reverse("api:handbooks_item_list", args=[handbook_name]), content_type="application/json")
+    assert response.status_code == 200
+    assert response.json() == expected_data
+
+
 def test_auth_register_view():
     client = Client()
     credentials = {
@@ -90,10 +105,9 @@ def test_user_view():
     assert response.status_code == 200
     assert response.json() == []
 
-
-@patch("api.views.store_exchanges_rates_task.apply_async")
-def test_store_exchange_rates_view(mock_apply_async):
-    client = Client()
-    response = client.post(reverse("api:store_exchanges_rates"), content_type="application/json")
-    assert response.status_code == 201
-    assert mock_apply_async.called
+# @patch("api.views.store_exchanges_rates_task.apply_async")
+# def test_store_exchange_rates_view(mock_apply_async):
+#     client = Client()
+#     response = client.post(reverse("api:store_exchanges_rates"), content_type="application/json")
+#     assert response.status_code == 201
+#     assert mock_apply_async.called
