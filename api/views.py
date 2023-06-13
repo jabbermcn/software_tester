@@ -2,9 +2,7 @@ import logging
 from typing import Type, Optional
 
 from django.apps import apps
-from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
-from django.contrib.auth import get_user_model
 
 # Lamb Framework
 from lamb.exc import AuthForbidden, NotExistError, InvalidParamValueError

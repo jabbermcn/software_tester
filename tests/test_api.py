@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.urls import reverse
 from django.test.client import Client
 
@@ -84,16 +86,14 @@ def test_auth_register_view():
 
 def test_user_view():
     client = Client()
-    user_id = "1"
-    response = client.get(reverse("api:user", args=[user_id]), content_type="application/json")
+    response = client.get(reverse("api:user"), content_type="application/json")
     assert response.status_code == 200
-#
-#
-# @patch("api.views.store_exchanges_rates_task.apply_async")
-# def test_store_exchange_rates_view(mock_apply_async):
-#     client = Client()
-#     # Создайте пользователя, который имеет доступ к хранению курсов обмена
-#     # Замените request.app_user_id на фактический идентификатор пользователя
-#     response = client.post(reverse("api:store-exchange-rates"), content_type="application/json")
-#     assert response.status_code == 201
-#     assert mock_apply_async.called
+    assert response.json() == []
+
+
+@patch("api.views.store_exchanges_rates_task.apply_async")
+def test_store_exchange_rates_view(mock_apply_async):
+    client = Client()
+    response = client.post(reverse("api:store_exchanges_rates"), content_type="application/json")
+    assert response.status_code == 201
+    assert mock_apply_async.called
