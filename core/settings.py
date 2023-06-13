@@ -13,6 +13,9 @@ from lamb.utils.validators import validate_port
 from lamb.utils.transformers import tf_list_string, transform_boolean
 
 import urllib3.exceptions
+import dotenv
+
+dotenv.load_dotenv()
 
 logging.captureWarnings(True)
 warnings.filterwarnings("default", category=DeprecationWarning, module="django")
